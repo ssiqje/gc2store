@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:layout_margin="20dp">
+
+    <ImageButton
+        android:id="@+id/imageBut_del"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:src="@drawable/del" />
+
+    <ImageButton
+        android:layout_marginLeft="30dp"
+        android:id="@+id/imageBut_modify"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:src="@drawable/write"/>
+
+</LinearLayout>

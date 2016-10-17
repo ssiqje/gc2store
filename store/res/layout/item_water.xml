@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+	
+    <TextView
+        	android:id="@+id/action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="动作" 
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/water_kind_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:ems="3"
+            android:text="编号" />
+
+        <TextView
+            android:id="@+id/water_pay_m"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="单价" />
+
+        <TextView
+            android:id="@+id/water_weight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="重量" />
+
+        <TextView
+            android:id="@+id/water_all_pay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="总价" />
+
+        <TextView
+            android:id="@+id/water_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="时间" />
+
+</LinearLayout>

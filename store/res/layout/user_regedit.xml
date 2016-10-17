@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="        欢迎您注册本服务，以下*号为必填项！"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#D335FC" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:gravity="right"
+                android:text="*昵称:" />
+
+            <EditText
+                android:id="@+id/editText_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10" >
+
+                <requestFocus android:layout_width="match_parent" />
+            </EditText>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:background="#9CC2CF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:gravity="right"
+                android:text="*密码:" />
+
+            <EditText
+                android:id="@+id/editText_user_psw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:background="#9CC2CF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:gravity="right"
+                android:text="*性别" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/radioButton_girl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="美女" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_boy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="帅哥" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:background="#9CC2CF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:gravity="right"
+                android:text="QQ:" />
+
+            <EditText
+                android:id="@+id/editText_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:background="#9CC2CF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="3"
+            android:gravity="right"
+            android:text="爱好:" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp" >
+
+            <CheckBox
+                android:id="@+id/checkBox_run"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="跑步" />
+
+            <CheckBox
+                android:id="@+id/checkBox_cycling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="骑行" />
+
+            <CheckBox
+                android:id="@+id/checkBox_play_badminton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="打羽毛球" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp" >
+
+            <CheckBox
+                android:id="@+id/checkBox_play_basketball"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="打篮球" />
+
+            <CheckBox
+                android:id="@+id/checkBox_tai_ji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="太极" />
+
+            <CheckBox
+                android:id="@+id/checkBox_free_combat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="散打" />
+
+            <CheckBox
+                android:id="@+id/checkBox_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="极限" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp" >
+
+            <CheckBox
+                android:id="@+id/checkBox_look_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="看书" />
+
+            <CheckBox
+                android:id="@+id/checkBox_move"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="看电影" />
+
+            <CheckBox
+                android:id="@+id/checkBox_music"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="听音乐" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:background="#9CC2CF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取消" 
+                android:onClick="regedit_cancel"/>
+
+            <Button
+                android:id="@+id/but_regedit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="注册" 
+                android:onClick="regedit_in"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
