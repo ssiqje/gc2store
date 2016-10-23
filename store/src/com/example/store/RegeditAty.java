@@ -7,9 +7,11 @@ import org.json.JSONObject;
 
 import com.example.store.network.Network_util;
 import com.example.store.server.Server;
+import com.example.view_component.viewComponent;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -47,6 +49,7 @@ public class RegeditAty extends Activity {
 	private String hobbly = "";
 	private CheckBox[] arrayBoxs;
 	private JSONObject userJsonObject;
+	private Dialog waitDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class RegeditAty extends Activity {
 			{
 				// TODO Auto-generated method stub
 				if (msg.what == CodeId.MessageID.REGEDIT_USER_OK) {
+					waitDialog.dismiss();
 					final JSONObject jsonObject = (JSONObject) msg.obj;
 					try {
 					final JSONObject user_jsonJsonObject=new JSONObject(jsonObject.getString("json_message"));
@@ -97,6 +101,7 @@ public class RegeditAty extends Activity {
 
 				}
 				if (msg.what == CodeId.MessageID.REGEDIT_USER_FAIL) {
+					waitDialog.dismiss();
 					Toast.makeText(RegeditAty.this, msg.obj.toString(),
 							Toast.LENGTH_LONG).show();
 					but_regedit.setEnabled(true);
@@ -208,12 +213,8 @@ public class RegeditAty extends Activity {
 			String jsonString = userJsonObject.toString();
 			Toast.makeText(RegeditAty.this, jsonString, Toast.LENGTH_LONG)
 					.show();
-			String urlString = null;
-			urlString = "http://192.168.254.101/datapackage/userdata";
-			// String
-			// urlString="http://192.168.254.100/datapackage/Userdate?action=user_regedit";
-			System.out.println(urlString);
-				Network_util.regeditUser(urlString, userJsonObject, handler);
+			waitDialog = viewComponent.waitServerGetSomeThing(RegeditAty.this, "请稍候。。。","正在为你注册中，请稍后。。。");
+				Network_util.regeditUser( userJsonObject, handler);
 		} else {
 			new AlertDialog.Builder(this).setCancelable(false).setTitle("警告！")
 					.setMessage("带*号的为必填项！").setNeutralButton("确定", null)

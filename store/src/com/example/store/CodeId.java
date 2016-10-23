@@ -1,6 +1,15 @@
 package com.example.store;
 
 public class CodeId {
+	public static  String url="http://2806602b.nat123.net:33438/datapackage/userdata";
+	
+	public static String getUrl() {
+		return url;
+	}
+	
+	public static void setUrl(String url) {
+		CodeId.url = url;
+	}
 
 	public static class MessageID{
 		public static final int REGEDIT_USER_OK = 1;
@@ -19,6 +28,10 @@ public class CodeId {
 		public static final int UN_LINE_FAIL=14;
 		public static int UPTABLE_FAIL=15;
 		public static int UPTABLE_OK=16;
+		public static final int GET_ALL_DB_OK = 17;
+		public static final int GET_ALL_DB_FAIL = 18;
+		public static final int GET_PHOTO_LIST_FAIL =19;
+		public static final int GET_PHOTO_ONE_FAIL = 20;
 	} 
 	public static class StartActivityID{
 		public static final int USER_REGEIDT = 1;

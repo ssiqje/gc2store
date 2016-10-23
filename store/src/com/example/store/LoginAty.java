@@ -4,9 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.store.network.Network_util;
+import com.example.view_component.viewComponent;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +26,7 @@ public class LoginAty extends Activity {
 	private CheckBox checkbox_login_auto_login;
 	private boolean auto_login;
 	private Handler handler;
-	
+	private Dialog waitDialog;
 	private SharedPreferences spPreferences;
 
 	@Override
@@ -48,8 +50,10 @@ public class LoginAty extends Activity {
 				// TODO Auto-generated method stub
 				if(msg.what==CodeId.MessageID.LOGIN_USER_PASS)
 				{
+					boolean b = false;
 					spPreferences= LoginAty.this.getSharedPreferences("user", MODE_APPEND);
 					Editor editor = spPreferences.edit();
+					String old_user_json = spPreferences.getString("user_json", "");
 					JSONObject user_jsonJsonObject=null;
 					try {
 						user_jsonJsonObject = new JSONObject(msg.obj.toString());
@@ -75,13 +79,33 @@ public class LoginAty extends Activity {
 					
 					
 					Intent intent = new Intent();
+					try {
+						if("".equals(old_user_json))
+						{
+							b=false;
+						}else {
+							JSONObject oldJsonObject = new JSONObject(old_user_json);
+							if(oldJsonObject.getInt("id")==user_jsonJsonObject.getInt("id"))
+							{
+								b=true;
+							}else {
+								b=false;
+							}
+						}
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					intent.putExtra("user_json",user_jsonJsonObject.toString());
+					intent.putExtra("is_same", b);
 					
 					LoginAty.this.setResult(Activity.RESULT_OK, intent);
+					waitDialog.dismiss();
 					finish();
 				}
 				if(msg.what==CodeId.MessageID.LOGIN_USER_FAIL)
 				{
+					waitDialog.dismiss();
 					new AlertDialog.Builder(LoginAty.this).setTitle("抱歉！").setMessage(msg.obj.toString()).setNeutralButton("确定", null).create().show();
 				}
 				
@@ -100,6 +124,7 @@ public class LoginAty extends Activity {
 			// TODO Auto-generated catch block
 			new AlertDialog.Builder(LoginAty.this).setTitle("提示！").setMessage("通行ID只能是数字，请你重新输入！").setCancelable(false).setNeutralButton("确定", null).create().show();
 			e1.printStackTrace();
+			return;
 		}
 		String user_psw = edittext_login_user_psw.getText().toString();
 		auto_login = checkbox_login_auto_login.isChecked();
@@ -111,6 +136,7 @@ public class LoginAty extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		waitDialog = viewComponent.waitServerGetSomeThing(LoginAty.this, "请稍候。。。","正在登入中，请稍后。。。");
 		Network_util.login_user(handler, userJsonObject.toString());
 	}
 

@@ -29,7 +29,7 @@ public class Network_util {
 	 * @param handler 
 	 * @return 返回HANDLER MSG,成功返回 WHAT=REGEDIT_USER_OK  失败返回 WHAT=REGEDIT_USER_FAIL
 	 */
-	public static void regeditUser(final String url, final JSONObject object,final Handler handler) 
+	public static void regeditUser(final JSONObject object,final Handler handler) 
 	{
 		new Thread(new Runnable() 
 		{
@@ -41,9 +41,10 @@ public class Network_util {
 				try {
 					
 						try {
-							HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+							HttpURLConnection connection = (HttpURLConnection) new URL(CodeId.getUrl()).openConnection();
 							
 							connection.setReadTimeout(1000 * 10);
+							connection.setConnectTimeout(1000 * 10);
 							connection.setRequestMethod("POST");
 							OutputStream outputStream = connection.getOutputStream();
 							outputStream.write(("action=user_regedit&userJson=" + object.toString()).getBytes());
@@ -66,12 +67,12 @@ public class Network_util {
 									{
 										handler.sendMessage(handler.obtainMessage(
 												CodeId.MessageID.REGEDIT_USER_OK, resulJsonObject));
-									}else {
-										handler.sendMessage(handler.obtainMessage(
-												CodeId.MessageID.REGEDIT_USER_FAIL, "注册失败！"));
+										return;
 									}
 								}
-
+								
+								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.REGEDIT_USER_FAIL, "注册失败！"));
+								
 
 						} catch (MalformedURLException e) {
 							// TODO Auto-generated catch block
@@ -88,6 +89,8 @@ public class Network_util {
 				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(
+							CodeId.MessageID.REGEDIT_USER_FAIL, "注册失败！"));
 				}
 
 			}
@@ -109,10 +112,10 @@ public class Network_util {
 				HttpURLConnection connection = null;
 				try {
 					connection = (HttpURLConnection) new URL(
-							"http://192.168.254.101/datapackage/userdata?action=get_photo_add_list")
+							(CodeId.getUrl()+"?action=get_photo_add_list"))
 							.openConnection();
-					connection.setReadTimeout(1000 * 5);
-					connection.setConnectTimeout(1000 * 5);
+					connection.setReadTimeout(1000 * 10);
+					connection.setConnectTimeout(1000 * 10);
 					connection.setRequestMethod("GET");
 					BufferedReader reader = new BufferedReader(
 							new InputStreamReader(connection.getInputStream()));
@@ -122,51 +125,64 @@ public class Network_util {
 						sbBuffer.append(lineString);
 					}
 					try {
-						JSONObject photo_infJsonObject = new JSONObject(
-								sbBuffer.toString());
-						String action = photo_infJsonObject.getString("action");
-						if ("get_photo_add_list".equals(action)) {
-							if ("ok".equals(photo_infJsonObject
-									.getString("result"))) {
-								JSONArray jsonArray = photo_infJsonObject
-										.getJSONArray("json_message");
-								for (int i = 0; i < jsonArray.length(); i++) {
-									Object object = jsonArray.get(i);
-									System.out.println("netwoke:" + object);
-									String urlString = "http://192.168.254.101/"
-											+ object;
-									System.out.println("url:" + urlString);
-									connection = (HttpURLConnection) new URL(
-											urlString).openConnection();
-									System.out.println();
-									connection.setReadTimeout(1000 * 5);
-									connection.setRequestMethod("GET");
-									Bitmap bitmap = BitmapFactory
-											.decodeStream(connection
-													.getInputStream());
-									HashMap<String, Object> map = new HashMap<String, Object>();
-									map.put("bitmap", bitmap);
-									map.put("url", urlString);
-									map.put("title", urlString.subSequence(
-											urlString.lastIndexOf("/"),
-											urlString.length()));
-									array_list_photo.add(map);
+						if(!"".equals(sbBuffer.toString()))
+						{
+							JSONObject photo_infJsonObject = new JSONObject(
+									sbBuffer.toString());
+							String action = photo_infJsonObject.getString("action");
+							if ("get_photo_add_list".equals(action)) {
+								if ("ok".equals(photo_infJsonObject
+										.getString("result"))) {
+									JSONArray jsonArray = photo_infJsonObject
+											.getJSONArray("json_message");
+									for (int i = 0; i < jsonArray.length(); i++) {
+										Object object = jsonArray.get(i);
+										System.out.println("netwoke:" + object);
+										String urlString = "http://192.168.254.101/"
+												+ object;
+										System.out.println("url:" + urlString);
+										connection = (HttpURLConnection) new URL(
+												urlString).openConnection();
+										System.out.println();
+										connection.setReadTimeout(1000 * 10);
+										connection.setConnectTimeout(1000 * 10);
+										connection.setRequestMethod("GET");
+										Bitmap bitmap = BitmapFactory
+												.decodeStream(connection
+														.getInputStream());
+										HashMap<String, Object> map = new HashMap<String, Object>();
+										map.put("bitmap", bitmap);
+										map.put("url", urlString);
+										map.put("title", urlString.subSequence(
+												urlString.lastIndexOf("/"),
+												urlString.length()));
+										array_list_photo.add(map);
+									}
+									handler.sendMessage(handler.obtainMessage(
+											CodeId.MessageID.GET_PHOTO_LIST_OK, array_list_photo));
+									return;
 								}
-								handler.sendMessage(handler.obtainMessage(
-										CodeId.MessageID.GET_PHOTO_LIST_OK, array_list_photo));
 							}
 						}
+						handler.sendMessage(handler.obtainMessage(
+								CodeId.MessageID.GET_PHOTO_LIST_FAIL, "获取头像数据失败，请稍候在！"));
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						handler.sendMessage(handler.obtainMessage(
+								CodeId.MessageID.GET_PHOTO_LIST_FAIL, "JSONException:获取头像数据失败，请稍候在！"));
 					}
 
 				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(
+							CodeId.MessageID.GET_PHOTO_LIST_FAIL, "MalformedURLException:获取头像数据失败，请稍候在！"));
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(
+							CodeId.MessageID.GET_PHOTO_LIST_FAIL, "IOException:获取头像数据失败，请稍候在！"));
 				}
 
 			}
@@ -201,9 +217,13 @@ public class Network_util {
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(CodeId.MessageID.GET_PHOTO_ONE_FAIL,
+							"关像初始化失败！"));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(CodeId.MessageID.GET_PHOTO_ONE_FAIL,
+							"关像初始化失败！"));
 				}
 			}
 
@@ -226,7 +246,7 @@ public class Network_util {
 				HttpURLConnection connection = null;
 				try {
 					connection = (HttpURLConnection) new URL(
-							"http://192.168.254.101/datapackage/userdata")
+							CodeId.getUrl())
 							.openConnection();
 					connection.setReadTimeout(1000 * 10);
 					connection.setConnectTimeout(1000 * 10);
@@ -243,22 +263,25 @@ public class Network_util {
 						sbBuffer.append(lineString);
 					}
 					try {
-						JSONObject login_resultJsonObject = new JSONObject(
-								sbBuffer.toString());
-						System.out.println("登入用户资料查找结果："+login_resultJsonObject.toString());
-						String action = login_resultJsonObject
-								.getString("action");
-						if ("login_user".equals(action)) {
-							if ("pass".equals(login_resultJsonObject
-									.getString("result"))) {
-								
+						if(!"".equals(sbBuffer.toString()))
+						{
+							JSONObject login_resultJsonObject = new JSONObject(
+									sbBuffer.toString());
+							System.out.println("登入用户资料查找结果："+login_resultJsonObject.toString());
+							String action = login_resultJsonObject
+									.getString("action");
+							if ("login_user".equals(action)) {
+								if ("pass".equals(login_resultJsonObject
+										.getString("result"))) {
+									
 
-								handler.sendMessage(handler.obtainMessage(
-										CodeId.MessageID.LOGIN_USER_PASS, login_resultJsonObject.getString("json_message")));
-							}else {
-								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.LOGIN_USER_FAIL, login_resultJsonObject.getString("json_message")));
+									handler.sendMessage(handler.obtainMessage(
+											CodeId.MessageID.LOGIN_USER_PASS, login_resultJsonObject.getString("json_message")));
+									return;
+								}
 							}
 						}
+							handler.sendMessage(handler.obtainMessage(CodeId.MessageID.LOGIN_USER_FAIL, "登入失败！"));
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -295,7 +318,7 @@ public class Network_util {
 				HttpURLConnection connection = null;
 				try {
 					connection = (HttpURLConnection) new URL(
-							"http://192.168.254.101/datapackage/userdata")
+							CodeId.getUrl())
 							.openConnection();
 					connection.setReadTimeout(1000 * 5);
 					connection.setConnectTimeout(1000 * 5);
@@ -312,22 +335,25 @@ public class Network_util {
 						sbBuffer.append(lineString);
 					}
 					try {
-						JSONObject login_resultJsonObject = new JSONObject(
-								sbBuffer.toString());
-						System.out.println("用户资料更新结果："+login_resultJsonObject.toString());
-						String action = login_resultJsonObject
-								.getString("action");
-						if ("up_user_data".equals(action)) {
-							if ("pass".equals(login_resultJsonObject
-									.getString("result"))) {
-								
+						if(!"".equals(sbBuffer.toString()))
+						{
+							JSONObject login_resultJsonObject = new JSONObject(
+									sbBuffer.toString());
+							System.out.println("用户资料更新结果："+login_resultJsonObject.toString());
+							String action = login_resultJsonObject
+									.getString("action");
+							if ("up_user_data".equals(action)) {
+								if ("pass".equals(login_resultJsonObject
+										.getString("result"))) {
+									
 
-								handler.sendMessage(handler.obtainMessage(
-										CodeId.MessageID.UP_USER_DATA_OK, "数据上传成功！"));
-							}else {
-								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UP_USER_DATA_FAIL, "数据上传失败！"));
+									handler.sendMessage(handler.obtainMessage(
+											CodeId.MessageID.UP_USER_DATA_OK, "数据上传成功！"));
+									return;
+								}
 							}
 						}
+							handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UP_USER_DATA_FAIL, "数据上传失败！"));
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -466,7 +492,7 @@ public class Network_util {
 				HttpURLConnection connection = null;
 				try {
 					connection = (HttpURLConnection) new URL(
-							"http://192.168.254.101/datapackage/userdata")
+							CodeId.getUrl())
 							.openConnection();
 					connection.setReadTimeout(1000 * 5);
 					connection.setConnectTimeout(1000 * 5);
@@ -483,21 +509,24 @@ public class Network_util {
 						sbBuffer.append(lineString);
 					}
 					try {
-						JSONObject login_resultJsonObject = new JSONObject(
-								sbBuffer.toString());
-						System.out.println("用户资料更新结果："+login_resultJsonObject.toString());
-						String action = login_resultJsonObject
-								.getString("action");
-						if ("un_line".equals(action)) {
-							if ("pass".equals(login_resultJsonObject
-									.getString("result"))) {
-								
-								System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~"+handler);
-								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UN_LINE_OK, "您已下线！"));
-							}else {
-								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UN_LINE_FAIL, "服务器舍不得你下，那你在玩会吧。"));
+						if(!"".equals(sbBuffer.toString()))
+						{
+							JSONObject login_resultJsonObject = new JSONObject(
+									sbBuffer.toString());
+							System.out.println("用户资料更新结果："+login_resultJsonObject.toString());
+							String action = login_resultJsonObject
+									.getString("action");
+							if ("un_line".equals(action)) {
+								if ("pass".equals(login_resultJsonObject
+										.getString("result"))) {
+									
+									System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~"+handler);
+									handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UN_LINE_OK, "您已下线！"));
+									return;
+								}
 							}
 						}
+							handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UN_LINE_FAIL, "服务器舍不得你下，那你在玩会吧。"));
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -527,7 +556,7 @@ public class Network_util {
 				HttpURLConnection connection = null;
 				try {
 					connection = (HttpURLConnection) new URL(
-							"http://192.168.254.101/datapackage/userdata")
+							CodeId.getUrl())
 							.openConnection();
 					connection.setReadTimeout(1000 * 5);
 					connection.setConnectTimeout(1000 * 5);
@@ -544,21 +573,22 @@ public class Network_util {
 						sbBuffer.append(lineString);
 					}
 					try {
-						JSONObject updata_resultJsonObject = new JSONObject(
-								sbBuffer.toString());
-						System.out.println("数据上传结果："+updata_resultJsonObject.toString());
-						String action = updata_resultJsonObject
-								.getString("action");
-						if ("uptable".equals(action)) {
-							if ("pass".equals(updata_resultJsonObject
-									.getString("result"))) {
-								
-								System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~"+handler);
-								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UPTABLE_OK, "数据上传成功！"));
-							}else {
-								handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UPTABLE_FAIL, "数据 上传失败了，请稍后重试。"));
+						if(!"".equals(sbBuffer.toString()))
+						{
+							JSONObject updata_resultJsonObject = new JSONObject(
+									sbBuffer.toString());
+							System.out.println("数据上传结果："+updata_resultJsonObject.toString());
+							String action = updata_resultJsonObject
+									.getString("action");
+							if ("uptable".equals(action)) {
+								if ("pass".equals(updata_resultJsonObject
+										.getString("result"))) {
+									handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UPTABLE_OK, "数据上传成功！"));
+									return;
+								}
 							}
 						}
+						handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UPTABLE_FAIL, "数据 上传失败了，请稍后重试。"));
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -573,6 +603,63 @@ public class Network_util {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					handler.sendMessage(handler.obtainMessage(CodeId.MessageID.UPTABLE_FAIL, "IO:网络异常，请稍候在试！"));
+				}
+
+			}
+		}).start();
+	}
+	public static void getAllData(final Handler handler,final String db_id) {
+		// TODO Auto-generated method stub
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				HttpURLConnection connection = null;
+				try {
+					connection = (HttpURLConnection) new URL(
+							(CodeId.getUrl()+"?action=get_all_db&db_id="+db_id))
+							.openConnection();
+					connection.setReadTimeout(1000 * 5);
+					connection.setConnectTimeout(1000 * 5);
+					connection.setRequestMethod("GET");
+					BufferedReader reader = new BufferedReader(
+							new InputStreamReader(connection.getInputStream()));
+					StringBuffer sbBuffer = new StringBuffer();
+					String lineString;
+					while ((lineString = reader.readLine()) != null) {
+						sbBuffer.append(lineString);
+					}
+					System.out.println("接收到的内容是： "+sbBuffer.toString());
+					if(!"".equals(sbBuffer.toString()))
+					{
+						try {
+							JSONObject jsonObject = new JSONObject(sbBuffer.toString());
+							if("get_all_db".equals(jsonObject.getString("action")))
+							{
+								if("pass".equals(jsonObject.getString("result")))
+								{
+									//数据正确返回
+									handler.sendMessage(handler.obtainMessage(CodeId.MessageID.GET_ALL_DB_OK, jsonObject.getJSONArray("json_message")));
+									return;
+								}
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+						//数据返回有误
+					handler.sendMessage(handler.obtainMessage(CodeId.MessageID.GET_ALL_DB_FAIL, "获取数据失败，请稍后在试。"));
+
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(CodeId.MessageID.GET_ALL_DB_FAIL, "MalformedURLException:获取数据失败，请稍后在试。"));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					handler.sendMessage(handler.obtainMessage(CodeId.MessageID.GET_ALL_DB_FAIL, "IOException:获取数据失败，请稍后在试。"));
 				}
 
 			}

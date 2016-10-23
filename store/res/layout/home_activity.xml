@@ -186,7 +186,8 @@
                         android:layout_height="70dp"
                         android:src="@drawable/defaultl" 
                         android:clickable="true"
-                        android:onClick="setPhoto"/>
+                        android:onClick="setPhoto"
+                        android:contentDescription="@string/user_photo"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -194,6 +195,19 @@
                         android:layout_marginLeft="20dp"
                         android:orientation="vertical" >
 
+                        <TextView
+                            android:id="@+id/textview_user_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="\?\?\?"
+                            android:textSize="20sp" />
+
+                        <View
+                            android:layout_width="wrap_content"
+                            android:layout_height="1dp"
+                            android:background="#12A339" />
+                        
                         <TextView
                             android:id="@+id/textview_user_name"
                             android:layout_width="match_parent"

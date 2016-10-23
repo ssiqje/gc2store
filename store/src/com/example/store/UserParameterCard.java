@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.store.network.Network_util;
+import com.example.view_component.viewComponent;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,6 +54,7 @@ public class UserParameterCard extends Activity {
 	private String photo_url;
 	private String user_name;
 	private String user_signature;
+	private Dialog waitDialog;
 
 	private SharedPreferences sPreferences;
 
@@ -89,6 +91,7 @@ public class UserParameterCard extends Activity {
 					}
 				}
 				if (msg.what == CodeId.MessageID.GET_PHOTO_LIST_OK) {
+					waitDialog.dismiss();
 					final ArrayList<HashMap<String, Object>> photo_list_data = (ArrayList<HashMap<String, Object>>) msg.obj;
 					if (photo_list_data != null && !photo_list_data.isEmpty()) {
 
@@ -126,7 +129,25 @@ public class UserParameterCard extends Activity {
 								.show();
 					}
 				}
+				if(msg.what==CodeId.MessageID.GET_PHOTO_LIST_FAIL){
+					waitDialog.dismiss();
+					new AlertDialog.Builder(UserParameterCard.this)
+					.setTitle("天呐")
+					.setMessage(msg.obj.toString())
+					.setNeutralButton("确定", null).create()
+					.show();
+				}
 				if (msg.what == CodeId.MessageID.UP_USER_DATA_OK) {
+					waitDialog.dismiss();
+					new AlertDialog.Builder(UserParameterCard.this)
+					.setTitle("天呐")
+					.setMessage(msg.obj.toString())
+					.setNeutralButton("确定", null).create()
+					.show();
+				}
+				if (msg.what == CodeId.MessageID.UP_USER_DATA_OK) {
+					waitDialog.dismiss();
+					but_user_parameter_card_confirm.setEnabled(true);
 					sPreferences = UserParameterCard.this.getSharedPreferences(
 							"user", MODE_APPEND);
 					Editor editor = sPreferences.edit();
@@ -153,6 +174,16 @@ public class UserParameterCard extends Activity {
 							}).create().show();
 
 				}
+				if (msg.what == CodeId.MessageID.UP_USER_DATA_FAIL)
+				{
+					waitDialog.dismiss();
+					but_user_parameter_card_confirm.setEnabled(true);
+					new AlertDialog.Builder(UserParameterCard.this)
+					.setTitle("天呐")
+					.setMessage(msg.obj.toString())
+					.setNeutralButton("可恶的熊孩子", null).create()
+					.show();
+				}
 			}
 
 		};
@@ -170,6 +201,7 @@ public class UserParameterCard extends Activity {
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
+						waitDialog = viewComponent.waitServerGetSomeThing(UserParameterCard.this, "请稍候。。。","正在获取头像数据中，请稍后。。。");
 						Network_util.getPhotoList(handler);
 						v.setClickable(false);
 
@@ -229,7 +261,7 @@ public class UserParameterCard extends Activity {
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-
+						v.setEnabled(false);
 						user_name = editText_suer_parameter_card_user_name
 								.getText().toString();
 						user_signature = editText_suer_parameter_card_user_signature
@@ -238,7 +270,7 @@ public class UserParameterCard extends Activity {
 							userJsonObject.put("photo_image", photo_url);
 							userJsonObject.put("user_name", user_name);
 							userJsonObject.put("signature", user_signature);
-
+							waitDialog = viewComponent.waitServerGetSomeThing(UserParameterCard.this, "请稍候。。。", "正在为你更新资料到服务器，请稍候。。。");
 							Network_util.upUser(handler, userJsonObject);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block

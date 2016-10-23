@@ -800,4 +800,18 @@ public class InStoreDaoInf implements InfDao {
 		}
 
 	}
+	/**
+	 * 删除指定数据表里的所有内容
+	 * @param simpleName
+	 */
+	public void delForTable(Class...tables){
+		// TODO Auto-generated method stub
+		db = dbHelper.getWritableDatabase();
+		for (Class class1 : tables) {
+			String sql = "delete from "+class1.getSimpleName();
+			System.out.println("sql:"+sql);
+			db.execSQL(sql);
+		}
+		close();
+	}
 }

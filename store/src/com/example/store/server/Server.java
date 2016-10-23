@@ -437,4 +437,139 @@ public class Server {
 		return dao.cancellationUpFlag();
 	}
 
+
+	/**
+	 * 获取服务器上的所有数据到本地数据库
+	 * @param handler
+	 * @param db_id 
+	 */
+	public void getServerAllDataToLoard(Handler handler, String db_id) {
+		// TODO Auto-generated method stub
+		Network_util.getAllData(handler,db_id);
+	}
+
+
+
+	public boolean addDataToLocal(Object obj) {
+		// TODO Auto-generated method stub
+		dao.delForTable(GcParameter.class,Store.class,In_store.class,Out_store.class,Summary.class);
+		JSONArray jsonArray =(JSONArray)obj;
+		try {
+			for (int i = 0 ; i<jsonArray.length();i++) {
+				System.out.println("正在写入："+jsonArray.get(i));
+				Object object=getObjectForType((JSONObject) jsonArray.get(i));
+				System.out.println("获取的类类型是："+object.getClass().getName());
+				dao.save(object);
+			}
+			return true;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	/**
+	 * 解析Json获得对象
+	 * 
+	 * @param jsonObject
+	 *            对象Json
+	 * @return 成功object 失败null
+	 */
+	private Object getObjectForType(JSONObject jsonObject) {
+		try {
+			String type=jsonObject.getString("type");
+			In_store in_store;
+			Out_store out_store;
+			 Store store;
+			 GcParameter gcparameter;
+			 Summary summary;
+			if ("in_store".equals(type)) {
+				in_store = new In_store();
+				if (jsonObject.has("id"))
+					in_store.setId(Long.parseLong(jsonObject.getString("id")));
+				if (jsonObject.has("kind_id"))
+					in_store.setKind_id(jsonObject.getString("kind_id"));
+				if (jsonObject.has("weight_m"))
+					in_store.setWeight_m(Float.parseFloat(jsonObject.getString("weight_m")));
+				if (jsonObject.has("gc_long"))
+					in_store.setGc_long(Float.parseFloat(jsonObject.getString("gc_long")));
+				if (jsonObject.has("inpay_m"))
+					in_store.setInpay_m(Float.parseFloat(jsonObject.getString("inpay_m")));
+				if (jsonObject.has("count"))
+					in_store.setCount(Integer.parseInt(jsonObject.getString("count")));
+				if (jsonObject.has("wight"))
+					in_store.setWight(Float.parseFloat(jsonObject.getString("wight")));
+				if (jsonObject.has("allpay"))
+					in_store.setAllpay(Float.parseFloat(jsonObject.getString("allpay")));
+				if (jsonObject.has("date"))
+					in_store.setDate(jsonObject.getString("date"));
+				return in_store;
+			} else if ("out_store".equals(type)) {
+				out_store = new Out_store();
+				if (jsonObject.has("id"))
+					out_store.setId(Long.parseLong(jsonObject.getString("id")));
+				if (jsonObject.has("kind_id"))
+					out_store.setKind_id(jsonObject.getString("kind_id"));
+				if (jsonObject.has("weight_m"))
+					out_store.setWeight_m(Float.parseFloat(jsonObject.getString("weight_m")));
+				if (jsonObject.has("gc_long"))
+					out_store.setGc_long(Float.parseFloat(jsonObject.getString("gc_long")));
+				if (jsonObject.has("outpay_m"))
+					out_store.setOutpay_m(Float.parseFloat(jsonObject.getString("outpay_m")));
+				if (jsonObject.has("count"))
+					out_store.setCount(Integer.parseInt(jsonObject.getString("count")));
+				if (jsonObject.has("wight"))
+					out_store.setWight(Float.parseFloat(jsonObject.getString("wight")));
+				if (jsonObject.has("allpay"))
+					out_store.setAllpay(Float.parseFloat(jsonObject.getString("allpay")));
+				if (jsonObject.has("date"))
+					out_store.setDate(jsonObject.getString("date"));
+				return out_store;
+			} else if ("store".equals(type)) {
+				store = new Store();
+				if (jsonObject.has("kind_id"))
+					store.setKind_id(jsonObject.getString("kind_id"));
+				if (jsonObject.has("weight_m"))
+					store.setWeight_m(Float.parseFloat(jsonObject.getString("weight_m")));
+				if (jsonObject.has("gc_long"))
+					store.setGc_long(Float.parseFloat(jsonObject.getString("gc_long")));
+				if (jsonObject.has("count"))
+					store.setCount(Integer.parseInt(jsonObject.getString("count")));
+				if (jsonObject.has("wight"))
+					store.setWight(Float.parseFloat(jsonObject.getString("wight")));
+				return store;
+			} else if ("summary".equals(type)) {
+				summary = new Summary();
+				if (jsonObject.has("id"))
+					summary.setId(Integer.parseInt(jsonObject.getString("id")));
+				if (jsonObject.has("weight_all"))
+					summary.setWeight_all(Float.parseFloat(jsonObject.getString("weight_all")));
+				if (jsonObject.has("inpay_all"))
+					summary.setInpay_all(Float.parseFloat(jsonObject.getString("inpay_all")));
+				if (jsonObject.has("outpay_all"))
+					summary.setOutpay_all(Float.parseFloat(jsonObject.getString("outpay_all")));
+				if (jsonObject.has("in_or_out_pay"))
+					summary.setIn_or_out_pay(Float.parseFloat(jsonObject.getString("in_or_out_pay")));
+				return summary;
+			} else if ("gcparameter".equals(type)) {
+				gcparameter = new GcParameter();
+				if (jsonObject.has("kind_id"))
+					gcparameter.setKind_id(jsonObject.getString("kind_id"));
+				if (jsonObject.has("gc_long"))
+					gcparameter.setGc_long(Float.parseFloat(jsonObject.getString("gc_long")));
+				if (jsonObject.has("weight_m"))
+					gcparameter.setWeight_m(Float.parseFloat(jsonObject.getString("weight_m")));
+				return gcparameter;
+			} else {
+				return null;
+			}
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
